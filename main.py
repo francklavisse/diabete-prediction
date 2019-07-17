@@ -80,3 +80,9 @@ X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, test_size=0.
 model = build_model()
 model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy']) # binary_crossentropy because we have a binary classification problem
 model.fit(X_train, y_train, epochs=200)
+
+scores = model.evaluate(X_train, y_train)
+print("Training accuracy: %.2f%%\n" % (scores[1] * 100))
+
+scores = model.evaluate(X_test, y_test)
+print("Testing accuracy: %.2f%%\n" % (scores[1] * 100))
