@@ -2,6 +2,7 @@ import pandas as pd
 import seaborn as sns
 import numpy as np
 from sklearn import preprocessing
+from sklearn.model_selection import train_test_split
 from matplotlib import pyplot as plt
 
 df = pd.read_csv('diabetes.csv')
@@ -47,12 +48,19 @@ def data_cleaning():
         df[col] = df[col].fillna(df[col].mean())
 
     print(df.describe())
-    
+
+def scale_data():
+    df_scaled = preprocessing.scale(df)
+    df_scaled = pd.DataFrame(df_scaled, columns=df.columns)
+    df_scaled['Outcome'] = df['Outcome']
+    return df_scaled    
+
 data_cleaning()
+df = scale_data()
 
-df_scaled = preprocessing.scale(df)
-df_scaled = pd.DataFrame(df_scaled, columns=df.columns)
-df_scaled['Outcome'] = df['Outcome']
-df = df_scaled 
+X = df.loc[:, df.columns != 'Outcome'] # features 
+y = df.loc[:, 'Outcome'] # target
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, test_size=0.2)
 
-print(df.describe().loc[['mean', 'std', 'max']].round(2).abs())
+#print(df.describe().loc[['mean', 'std', 'max']].round(2).abs())
