@@ -1,6 +1,7 @@
 import pandas as pd 
 import seaborn as sns
 import numpy as np
+from sklearn import preprocessing
 from matplotlib import pyplot as plt
 
 df = pd.read_csv('diabetes.csv')
@@ -45,6 +46,13 @@ def data_cleaning():
     for col in cols:
         df[col] = df[col].fillna(df[col].mean())
 
-    print(df.describe())        
+    print(df.describe())
     
 data_cleaning()
+
+df_scaled = preprocessing.scale(df)
+df_scaled = pd.DataFrame(df_scaled, columns=df.columns)
+df_scaled['Outcome'] = df['Outcome']
+df = df_scaled 
+
+print(df.describe().loc[['mean', 'std', 'max']].round(2).abs())
