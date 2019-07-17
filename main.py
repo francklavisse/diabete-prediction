@@ -58,6 +58,17 @@ def scale_data():
     #print(df.describe().loc[['mean', 'std', 'max']].round(2).abs())
     return df_scaled    
 
+def build_model():
+    model = Sequential()
+    model.add(Dense(32, activation='relu', input_dim=8)) # Relu: f(x) = max(0,x), treat negative values as 0 or return x 
+    model.add(Dense(16, activation='relu'))  # Add an hidden
+
+    # only 1 layer because we want a binary input
+    # sigmoid: f(x) = 1 / (1 - e^-x) 
+    # squashes the output between 0 and 1, if sig(x) < 0.5 it will be 0, if not 1
+    model.add(Dense(1, activation='sigmoid')) 
+    return model
+
 data_cleaning()
 df = scale_data()
 
@@ -66,11 +77,6 @@ y = df.loc[:, 'Outcome'] # target
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
 X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, test_size=0.2)
 
-model = Sequential()
-model.add(Dense(32, activation='relu', input_dim=8)) # Relu: f(x) = max(0,x), treat negative values as 0 or return x 
-model.add(Dense(16, activation='relu'))  # Add an hidden
-
-# only 1 layer because we want a binary input
-# sigmoid: f(x) = 1 / (1 - e^-x) 
-# squashes the output between 0 and 1, if sig(x) < 0.5 it will be 0, if not 1
-model.add(Dense(1, activation='sigmoid')) 
+model = build_model()
+model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy']) # binary_crossentropy because we have a binary classification problem
+model.fit(X_train, y_train, epochs=200)
