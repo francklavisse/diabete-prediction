@@ -25,4 +25,14 @@ def display_density_plots():
     plt.subplot(3,3,9).set_visible(False) # plot number 9 doesn't exist we only have 8 columns
     plt.show()
 
-display_density_plots()
+def data_cleaning():
+    print(df.isnull().any())
+    print(df.describe())
+
+    print("Number of rows with 0 values for each variables")
+    for col in df.columns:
+        missing_rows = df.loc[df[col] == 0].shape[0]
+        print(col + ": " + str(missing_rows))
+
+
+data_cleaning()
